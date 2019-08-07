@@ -2,6 +2,15 @@
 Analysis code for SiPM tile tests and characterization for DarkSide
 
 ## Instructions for running on data
+
+### Plotting raw waveforms
+Use SiPM_plot.py to plot the raw waveforms to see where the trigger peak is, and to check the noise levels. This is run with 
+
+        python SiPM_plot.py
+        
+and it will output six pdf files of the first six raw waveforms. 
+
+### Analyzing the waveforms
 read_txt.py and analyze_data.py are designed to analyse data from a SiPM tile, saved as a txt file with the amplitudes. The text file is expected to have headers with the record length, board ID, event number, pattern, trigger time stamp, and DC offset. The trigger time stamp is used to calculate the DCR (time difference between SiPM responses) and the record length is used to split into individual waveforms.
 
 To run:

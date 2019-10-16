@@ -6,6 +6,8 @@ import pandas as pd
 #import pysndfile
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from sklearn import mixture
+import matplotlib.mlab
 
 # Edited by: gillian kopp [2019] for SiPM data analysis
 # edited from Graham Giovanetti's code
@@ -35,24 +37,55 @@ event_df = pd.read_pickle(sys.argv[1])
 
 # event_df.to_pickle('100ns_late_events.pickle')
 
+#mean,std=norm.fit(event_df['e_int'])
+
+clf = mixture.GaussianMixture(n_components=3, covariance_type='full')
+clf.fit((event_df['e_int'].to_numpy()).reshape(-1, 1)) #turn into a numpy array instead
+m1, m2, m3 = clf.means_ # mean
+w1, w2, w3 = clf.weights_ # height
+c1, c2, c3 = clf.covariances_ # width
+#histdist = matplotlib.pyplot.hist(event_df['e_int'], 4000, normed=True)
+#plotgauss1 = lambda x: plt.plot(x,w1*matplotlib.mlab.normpdf(x,m1,np.sqrt(c1))[0], linewidth=3)
+#plotgauss2 = lambda x: plt.plot(x,w2*matplotlib.mlab.normpdf(x,m2,np.sqrt(c2))[0], linewidth=3)
+#plotgauss3 = lambda x: plt.plot(x,w3*matplotlib.mlab.normpdf(x,m3,np.sqrt(c3))[0], linewidth=3)
+#plotgauss1(histdist[1])
+#plotgauss2(histdist[1])
+#plotgauss3(histdist[1])
+
+print 'made gaussians with means ', m1, m2, m3
+print 'made gaussians with weights ', w1, w2, w3
+print 'made gaussians with stdev ', c1, c2, c3
 # energy histogram
 #plt.hist(event_df['e_corr']/1e6,bins=1000)
 plt.figure(1000)
-plt.hist(event_df['e_int'],bins=2000)
-plt.xlabel('Energy (arb)')
-plt.xlim(-5, 70)
+plt.hist(event_df['e_int'],bins=4000)
+x = np.linspace(0,45,4000)
+p1 = stats.norm.pdf(x,m1,c1)*w1
+p2 = stats.norm.pdf(x,m2,c2)*w2
+p3 = stats.norm.pdf(x,m3,c3)*w3
+print len(x)
+print len(p1.reshape(-1,1))
+plt.plot(x,p1.reshape(-1,1),'k',linewidth=2)
+plt.plot(x,p2.reshape(-1,1),'k',linewidth=2)
+plt.plot(x,p3.reshape(-1,1),'k',linewidth=2)
+plt.xlabel('Charge (arb units)')
+plt.xlim(0, 45)
 plt.ylabel('Counts')
-plt.title('Energy Spectrum, 70 V Bias')
+plt.title('Energy Spectrum from Moving Average Filtering, 68 V Bias')
 plt.savefig('Energy Spectrum.pdf')
-#plt.show()
+plt.show()
+
+
+
+#(mu,sigma) = norm.fit(event_df['e_int'])
 
 # energy histogram from convolution
 plt.figure(2000)
 plt.hist(event_df['e_corr'],bins=4000)
-plt.xlabel('Energy (arb)')
-plt.xlim(-5, 150000)
+plt.xlabel('Energy (arb units)')
+plt.xlim(-5, 20000)
 plt.ylabel('Counts')
-plt.title('Energy Spectrum from Convolution, 70 V Bias')
+plt.title('Energy Spectrum from Convolution, 68 V Bias')
 plt.savefig('Energy Spectrum Convolution.pdf')
 #plt.show()
 

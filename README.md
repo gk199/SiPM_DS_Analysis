@@ -1,5 +1,5 @@
 # SiPM_DS_Analysis
-Analysis code for SiPM tile tests and characterization for DarkSide
+Analysis code for SiPM tile tests and characterization for DarkSide. This code was used to analyze data taken in 2018, 2019 with the hardware setup to test SiPM response, and results were presented as my experimental project (Nov 2019).
 
 ## Instructions for running on data
 
@@ -22,4 +22,5 @@ read_txt.py will output a pickle file, that is then read into analyze_data.py to
 
 read_txt.py calculates the average noise (start of the waveform), and uses a scanned integration window to calculate the max of the waveform for use in the energy calculation. By defining energy values around single photoelectron peaks, average waveforms for single, two, three, etc. photoelectrons are calculated. The single photoelectron peak is used as a template waveform for the convolution algorithm, with the output waveform saved in the pickle file. It also saves the timestamps of each waveform, which is used to calculate the DCR.
 
-In read_txt.py, if energy values for the photo-electron peaks are known, these can be used to choose waveforms with 1, 2, and 3 PEs to make average waveforms. These values can be edited. Additionally, need to edit if there are events with a high trigger rate (at the beginning of a run) that need to be cut out, and edit the energy cut for the DCR calculation (the point between the pedistal and first photo-electron peak). 
+## Location on local files
+This is stored in `/Users/gilliankopp/Documents/Princeton/Research/DarkSide/April2019Analysis`. Data directory is now stores on backup drive, as the data files are rather large.
